@@ -135,8 +135,8 @@ O visual segue o mockup já validado (tema claro, azul-ardósia, serifada cláss
 
 ## 6. Decisões em aberto (bloqueiam o schema/migração)
 
-- [ ] **IDs**: preservar IDs numéricos do legado (`bigint`) — confirmar.
-- [ ] **Senhas**: opção (A) preservar bcrypt ou (B) reset por e-mail — confirmar.
-- [ ] **Restrições de campo** pendentes (autores.nome, pessoas.cpf/email, livros.codigo_livro/genero_id, exemplares.numero_tombo/data_aquisicao, prazo padrão de devolução).
-- [ ] **Dump** do banco atual disponibilizado.
-- [ ] Nome definitivo do repositório novo.
+- [x] **IDs**: preservar IDs numéricos do legado (`bigint`). ✅
+- [x] **Senhas**: opção (B) reset por e-mail. ✅
+- [x] **Restrições de campo**: confirmadas — ver [ARQUITETURA.md](./ARQUITETURA.md) §3.5. ✅
+- [x] **Nome do repositório**: `biblioteca-iecg` (GitHub: avrossini/biblioteca-iecg). ✅
+- [ ] **Dump** do banco atual (`mysqldump`) — pendente, necessário para a Fase 8/9.

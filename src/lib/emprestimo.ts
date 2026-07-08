@@ -4,8 +4,13 @@
  * independente do fuso do servidor.
  */
 
-/** Prazo padrão de empréstimo, em dias. Decisão de negócio — a confirmar. */
-export const PRAZO_PADRAO_DIAS = 14;
+/**
+ * Prazo padrão de empréstimo, em dias.
+ * Configurável via env `NEXT_PUBLIC_PRAZO_DEVOLUCAO_DIAS` (default 14).
+ */
+const prazoEnv = Number(process.env.NEXT_PUBLIC_PRAZO_DEVOLUCAO_DIAS);
+export const PRAZO_PADRAO_DIAS =
+  Number.isFinite(prazoEnv) && prazoEnv > 0 ? prazoEnv : 14;
 
 /** Data prevista de devolução = data do empréstimo + `dias`. */
 export function calcularDataPrevista(

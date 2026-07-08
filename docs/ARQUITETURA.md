@@ -87,6 +87,28 @@ emprestimos    (id, exemplar_id → exemplares, pessoa_id → pessoas,
 
 ---
 
+### 3.5. Restrições confirmadas (2026-07-08)
+
+Decididas com o cliente; regem o schema de destino da migração.
+
+| Item | Decisão |
+|------|---------|
+| **IDs (domínio)** | `bigint`, preservando os IDs do legado (FKs batem sem remapeamento). |
+| **Senhas** | Não migradas; contas recriadas no Supabase Auth com **reset por e-mail** (opção B). |
+| **autores.nome** | Obrigatório, **não único** (permite homônimos). |
+| **pessoas.cpf** | Opcional, **único quando preenchido**, com validação de formato. |
+| **pessoas.email** | Opcional, **único quando preenchido**. |
+| **pessoas.telefone** | Opcional, sem restrição. |
+| **livros.codigo_livro** | **Texto**, opcional, sem unicidade. |
+| **livros.genero_id** | **Obrigatório**. |
+| **livros.nome** | Obrigatório, não único. |
+| **temas** | `nome` obrigatório, **único por livro** (`UNIQUE(livro_id, nome)`). |
+| **exemplares.numero_tombo** | Campo novo, opcional, sem unicidade. |
+| **exemplares.data_aquisicao** | Opcional. |
+| **emprestimos** | No máx. **1 em aberto por exemplar** (`UNIQUE(exemplar_id) WHERE data_devolucao IS NULL`); `data_prevista_devolucao` obrigatória. |
+| **status** | Referenciado por `codigo` estável (`disponivel`/`emprestado`), nunca por id fixo. |
+| **Prazo de devolução** | Configurável por ambiente: `NEXT_PUBLIC_PRAZO_DEVOLUCAO_DIAS` (default 14). |
+
 ## 4. Modelo de dados — ACL
 
 Modelo **RBAC multi-grupo** (usuário pode ter vários grupos; permissões se somam), conforme decidido.
@@ -264,10 +286,12 @@ middleware.ts               # sessão + proteção de rotas por permissão
 
 ## 9. Decisões em aberto
 
-- [ ] Confirmar melhorias da seção 3.4 (data prevista de devolução, validação ao emprestar, campos únicos).
-- [ ] Confirmar políticas de exclusão da seção 3.3.
-- [ ] Migração dos dados legados (MySQL atual → Postgres/Supabase) é necessária?
+- [x] Restrições de campo — **confirmadas** (ver §3.5).
+- [x] IDs (`bigint`) e senhas (reset por e-mail) — **confirmados**.
+- [x] Migração dos dados legados — **necessária** (script ETL; ver PLANO §3).
+- [x] Layout visual / identidade — **validado por mockup** (tema claro, azul-ardósia, Georgia, lombada por gênero).
+- [ ] Políticas de exclusão (§3.3) — propostas; confirmar caso a caso na Fase 4/6.
 - [ ] Idioma/i18n e fuso horário para as datas.
-- [ ] Layout visual / identidade (usar shadcn/ui? paleta? logo?).
+- [ ] Disponibilizar o **dump** do MySQL atual para a migração.
 ```
 
