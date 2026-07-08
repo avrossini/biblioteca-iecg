@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Biblioteca IECG
 
-## Getting Started
+Sistema de gestão de biblioteca (v2) — catálogo, acervo e circulação, com controle
+de acesso por grupos (ACL) e PWA. Reescrita do sistema legado (Laravel) em
+**Next.js + Supabase**.
 
-First, run the development server:
+> Documentação completa em [`docs/`](./docs): processos de negócio, arquitetura,
+> plano de desenvolvimento e o guia de ambiente/testes.
+
+## Stack
+
+- **Next.js** (App Router, TypeScript) + **Tailwind CSS**
+- **Supabase** (Postgres + Auth + RLS)
+- **Testes (TDD):** Vitest + React Testing Library, Playwright (E2E), pgTAP (RLS)
+- **Ambiente local:** Docker (app) + Supabase CLI (Docker)
+- **Deploy:** Vercel (`git push` na `main`)
+
+## Pré-requisitos
+
+- Docker Engine em execução
+- Node 24+ (para comandos `npm`/`npx` no host)
+
+## Rodando localmente
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local        # preencha com os valores de `npx supabase start`
+npx supabase start                # sobe Postgres/Auth/Studio (Docker)
+docker compose up                 # sobe o app (http://localhost:3000)
+# ou, com make:
+make up
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Studio (UI do banco): http://localhost:54323
+- `npx supabase db reset` recria o banco a partir das migrations + seeds.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Testes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run test:unit     # Vitest (componentes + regras de negócio)
+npm run test:e2e      # Playwright (fluxos no navegador)
+npm run test:db       # pgTAP (RLS/ACL) — requer Supabase no ar
+make test             # unit + db
+```
 
-## Learn More
+O desenvolvimento é **test-first**: cada regra/funcionalidade nasce de um teste
+que falha. O CI (GitHub Actions) roda toda a suíte e barra merge com teste vermelho.
 
-To learn more about Next.js, take a look at the following resources:
+## Estrutura
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/app         Rotas (App Router)
+src/components  Componentes de UI
+src/lib         Regras de negócio, clientes Supabase
+supabase        Config, migrations, seeds e testes (pgTAP)
+tests           unit / integration (Vitest) e e2e (Playwright)
+docs            Documentação do projeto
+```

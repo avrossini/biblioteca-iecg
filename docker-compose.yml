@@ -1,0 +1,20 @@
+# Ambiente de desenvolvimento do app em contêiner.
+# O stack do Supabase (Postgres/Auth/Storage/Studio) é gerido pela Supabase CLI,
+# que também sobe seus próprios contêineres Docker. O app os alcança via
+# host.docker.internal (portas 54321 API / 54322 Postgres).
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.local
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: npm run dev

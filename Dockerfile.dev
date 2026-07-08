@@ -1,0 +1,14 @@
+# Imagem de desenvolvimento do app Next.js (hot-reload via bind mount no compose).
+FROM node:24-alpine
+
+WORKDIR /app
+
+# Instala dependências primeiro (cache de camada).
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Código é montado por bind mount em dev; a cópia serve de fallback.
+COPY . .
+
+EXPOSE 3000
+CMD ["npm", "run", "dev"]

@@ -1,0 +1,3 @@
+-- Migração inicial (Fase 0).
+-- Intencionalmente vazia: estabelece o versionamento de migrations.
+-- O schema de domínio e o ACL (tabelas + RLS + seeds) entram na Fase 1.
