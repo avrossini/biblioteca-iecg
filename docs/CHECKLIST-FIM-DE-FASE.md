@@ -153,7 +153,7 @@ gated por `exemplar.*`; exclusão bloqueada por FK quando há empréstimo. **Fas
 | E2E (Playwright) | ✓ 15/15 (cria leitor; CPF inválido barrado) |
 | Build / Docker | ✓ (`/leitores` 307, `/login` 200) |
 | `supabase db reset` | ✓ |
-| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 5") |
+| CI (GitHub Actions) | ✓ success (run do commit "Fase 5") |
 
 Deliverables: CRUD de leitores (`/leitores`) reutilizando `CadastroSimples`; `src/lib/cpf.ts`
 (validação de dígitos verificadores); item "Leitores" no menu. Nota: erro em `role="alert"` colide
