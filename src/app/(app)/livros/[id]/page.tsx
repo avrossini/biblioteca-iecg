@@ -6,6 +6,7 @@ import { Chip } from "@/components/ui/Chip";
 import { corGenero } from "@/lib/cores-genero";
 import { sanitizarResumo } from "@/lib/sanitize";
 import { LivroAcoes } from "./LivroAcoes";
+import { ExemplaresSecao } from "./ExemplaresSecao";
 
 type LivroDetalhe = {
   id: number;
@@ -42,6 +43,37 @@ export default async function LivroDetalhePage({
   const permissoes = await getPermissoes();
   const resumoHtml = sanitizarResumo(livro.resumo);
   const autores = livro.livro_autor.map((la) => la.autores?.nome).filter(Boolean);
+
+  const [{ data: exRaw }, { data: bibliotecas }, { data: statuses }] = await Promise.all([
+    supabase
+      .from("exemplares")
+      .select(
+        `id, numero_tombo, data_aquisicao, biblioteca_id, status_id, bibliotecas ( nome ), status ( codigo, nome )`,
+      )
+      .eq("livro_id", livro.id)
+      .order("id"),
+    supabase.from("bibliotecas").select("id, nome").order("nome"),
+    supabase.from("status").select("id, nome").order("codigo"),
+  ]);
+  type ExRow = {
+    id: number;
+    numero_tombo: string | null;
+    data_aquisicao: string | null;
+    biblioteca_id: number;
+    status_id: number;
+    bibliotecas: { nome: string } | null;
+    status: { codigo: string; nome: string } | null;
+  };
+  const exemplares = ((exRaw ?? []) as unknown as ExRow[]).map((e) => ({
+    id: e.id,
+    biblioteca_id: e.biblioteca_id,
+    status_id: e.status_id,
+    numero_tombo: e.numero_tombo,
+    data_aquisicao: e.data_aquisicao,
+    biblioteca: e.bibliotecas?.nome ?? "—",
+    statusCodigo: e.status?.codigo ?? "",
+    statusNome: e.status?.nome ?? "—",
+  }));
 
   return (
     <div className="flex flex-col gap-4 p-4 md:p-6">
@@ -90,6 +122,16 @@ export default async function LivroDetalhePage({
           <p className="text-muted">Sem resumo.</p>
         )}
       </Card>
+
+      <ExemplaresSecao
+        livroId={livro.id}
+        exemplares={exemplares}
+        bibliotecas={bibliotecas ?? []}
+        statuses={statuses ?? []}
+        podeCriar={permissoes.includes("exemplar.create")}
+        podeEditar={permissoes.includes("exemplar.update")}
+        podeExcluir={permissoes.includes("exemplar.destroy")}
+      />
     </div>
   );
 }

@@ -48,6 +48,26 @@ test("admin cria um livro completo", async ({ page }) => {
   await expect(page.getByText("Um ótimo livro de teste.")).toBeVisible();
 });
 
+test("admin adiciona exemplar a um livro", async ({ page }) => {
+  const tombo = `T${Date.now()}`;
+  await login(page, "rossini@gmail.com");
+
+  // Garante ao menos uma biblioteca
+  await page.goto("/bibliotecas");
+  await page.getByRole("button", { name: /Novo biblioteca/ }).click();
+  await page.getByLabel("Nome").fill(`Bib ${Date.now()}`);
+  await page.getByRole("button", { name: "Criar" }).click();
+
+  // Abre o primeiro livro e adiciona um exemplar
+  await page.goto("/livros");
+  await page.locator("tbody tr td a").first().click();
+  await expect(page.getByRole("heading", { name: "Exemplares" })).toBeVisible();
+  await page.getByRole("button", { name: "Novo exemplar" }).click();
+  await page.getByLabel("Nº de tombo").fill(tombo);
+  await page.getByRole("button", { name: "Adicionar" }).click();
+  await expect(page.getByText(tombo)).toBeVisible();
+});
+
 test("atendente vê livros mas não cria; sem catálogo de cadastros", async ({ page }) => {
   await login(page, "atendente@gmail.com");
 

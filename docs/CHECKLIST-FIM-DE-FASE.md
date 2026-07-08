@@ -121,12 +121,27 @@ admin persiste mudança de permissão no banco vivo); e matar servidor antigo na
 | E2E (Playwright) | ✓ 12/12 (cria livro completo com rich text; Atendente vê lista mas não cria) |
 | Build / Docker | ✓ (`/livros` 307 protegido, `/login` 200) |
 | `supabase db reset` | ✓ |
-| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 4b") |
+| CI (GitHub Actions) | ✓ success (run do commit "Fase 4b") |
 
 Deliverables: lista de livros (lombada por gênero determinística), formulário com autores
 (multi-seleção), temas (tags) e **resumo rich text (Tiptap)**, detalhe com resumo **sanitizado**
 (`sanitize-html`), editar/excluir (`.bind` de server action). Nota: o teste E2E da matriz de
 permissões agora **restaura** o estado para não contaminar outros testes.
+
+### Fase 4c — Catálogo: exemplares — ✅ APROVADA (2026-07-08)
+
+| Verificação | Resultado |
+|-------------|-----------|
+| Lint / Typecheck | ✓ |
+| Unit (Vitest) | ✓ 20/20 |
+| pgTAP (banco) | ✓ 43 (inclui RLS de exemplares) |
+| E2E (Playwright) | ✓ 13/13 (admin adiciona exemplar a um livro) |
+| Build / Docker | ✓ (`/livros` 307, `/login` 200) |
+| `supabase db reset` | ✓ |
+| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 4c") |
+
+Deliverables: seção **Exemplares** na página do livro (listar/criar/editar/excluir, status em Chip),
+gated por `exemplar.*`; exclusão bloqueada por FK quando há empréstimo. **Fase 4 (Catálogo) concluída.**
 
 ### Modelo para as próximas fases
 
