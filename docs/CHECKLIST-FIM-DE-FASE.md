@@ -104,7 +104,7 @@ importação segura em Client Components.
 | E2E (Playwright) | ✓ 11/11 (cria gênero/autor; Atendente sem catálogo e bloqueado em /generos) |
 | Build / Docker | ✓ (`/generos` 307 protegido, `/login` 200) |
 | `supabase db reset` | ✓ |
-| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 4a") |
+| CI (GitHub Actions) | ✓ success (run do commit "Fase 4a") |
 
 Deliverables: componente genérico `CadastroSimples`; CRUD de **gêneros, autores, bibliotecas, status**
 (status com códigos núcleo protegidos); seção **Catálogo** no menu (gated); erros de FK/RLS traduzidos
