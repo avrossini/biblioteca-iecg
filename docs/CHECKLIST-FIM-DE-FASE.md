@@ -138,7 +138,7 @@ permissões agora **restaura** o estado para não contaminar outros testes.
 | E2E (Playwright) | ✓ 13/13 (admin adiciona exemplar a um livro) |
 | Build / Docker | ✓ (`/livros` 307, `/login` 200) |
 | `supabase db reset` | ✓ |
-| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 4c") |
+| CI (GitHub Actions) | ✓ success (run do commit "Fase 4c") |
 
 Deliverables: seção **Exemplares** na página do livro (listar/criar/editar/excluir, status em Chip),
 gated por `exemplar.*`; exclusão bloqueada por FK quando há empréstimo. **Fase 4 (Catálogo) concluída.**
