@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
@@ -10,6 +11,7 @@ import {
   excluirExemplar,
   type DadosExemplar,
 } from "./exemplares/actions";
+import { emprestar, devolver } from "../../emprestimos/actions";
 
 type Opcao = { id: number; nome: string };
 type Exemplar = {
@@ -21,6 +23,7 @@ type Exemplar = {
   biblioteca: string;
   statusCodigo: string;
   statusNome: string;
+  emprestimoAbertoId: number | null;
 };
 
 const inputCls =
@@ -31,24 +34,32 @@ export function ExemplaresSecao({
   exemplares,
   bibliotecas,
   statuses,
+  leitores,
   podeCriar,
   podeEditar,
   podeExcluir,
+  podeEmprestar,
+  podeDevolver,
+  podeHistorico,
 }: {
   livroId: number;
   exemplares: Exemplar[];
   bibliotecas: Opcao[];
   statuses: Opcao[];
+  leitores: Opcao[];
   podeCriar: boolean;
   podeEditar: boolean;
   podeExcluir: boolean;
+  podeEmprestar: boolean;
+  podeDevolver: boolean;
+  podeHistorico: boolean;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [erro, setErro] = useState<string | null>(null);
   const [form, setForm] = useState<{ id: number | null; dados: DadosExemplar } | null>(null);
-
-  const statusDisponivel = statuses.find((s) => s.nome)?.id;
+  const [emprestandoId, setEmprestandoId] = useState<number | null>(null);
+  const [leitorSel, setLeitorSel] = useState("");
 
   function novo() {
     setErro(null);
@@ -56,7 +67,7 @@ export function ExemplaresSecao({
       id: null,
       dados: {
         biblioteca_id: bibliotecas[0]?.id ?? 0,
-        status_id: statusDisponivel ?? statuses[0]?.id ?? 0,
+        status_id: statuses[0]?.id ?? 0,
         numero_tombo: "",
         data_aquisicao: "",
       },
@@ -74,10 +85,13 @@ export function ExemplaresSecao({
       },
     });
   }
+  function set(campo: keyof DadosExemplar, valor: string | number) {
+    if (!form) return;
+    setForm({ ...form, dados: { ...form.dados, [campo]: valor } });
+  }
 
   function salvar() {
-    if (!form) return;
-    if (!form.dados.biblioteca_id || !form.dados.status_id) {
+    if (!form || !form.dados.biblioteca_id || !form.dados.status_id) {
       setErro("Selecione biblioteca e status.");
       return;
     }
@@ -99,10 +113,24 @@ export function ExemplaresSecao({
       router.refresh();
     });
   }
-
-  function set(campo: keyof DadosExemplar, valor: string | number) {
-    if (!form) return;
-    setForm({ ...form, dados: { ...form.dados, [campo]: valor } });
+  function confirmarEmprestimo(exemplarId: number) {
+    if (!leitorSel) return setErro("Selecione um leitor.");
+    setErro(null);
+    start(async () => {
+      const res = await emprestar(exemplarId, Number(leitorSel));
+      if (res.erro) return setErro(res.erro);
+      setEmprestandoId(null);
+      setLeitorSel("");
+      router.refresh();
+    });
+  }
+  function devolverExemplar(emprestimoId: number) {
+    setErro(null);
+    start(async () => {
+      const res = await devolver(emprestimoId);
+      if (res.erro) return setErro(res.erro);
+      router.refresh();
+    });
   }
 
   return (
@@ -129,65 +157,33 @@ export function ExemplaresSecao({
         <div className="mb-4 grid gap-3 rounded-lg border border-border p-3 sm:grid-cols-2">
           <label className="flex flex-col gap-1 text-sm">
             <span className="font-medium">Biblioteca</span>
-            <select
-              aria-label="Biblioteca"
-              className={inputCls}
-              value={form.dados.biblioteca_id}
-              onChange={(e) => set("biblioteca_id", Number(e.target.value))}
-            >
+            <select aria-label="Biblioteca" className={inputCls} value={form.dados.biblioteca_id} onChange={(e) => set("biblioteca_id", Number(e.target.value))}>
               {bibliotecas.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.nome}
-                </option>
+                <option key={b.id} value={b.id}>{b.nome}</option>
               ))}
             </select>
           </label>
           <label className="flex flex-col gap-1 text-sm">
             <span className="font-medium">Status</span>
-            <select
-              aria-label="Status"
-              className={inputCls}
-              value={form.dados.status_id}
-              onChange={(e) => set("status_id", Number(e.target.value))}
-            >
+            <select aria-label="Status" className={inputCls} value={form.dados.status_id} onChange={(e) => set("status_id", Number(e.target.value))}>
               {statuses.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.nome}
-                </option>
+                <option key={s.id} value={s.id}>{s.nome}</option>
               ))}
             </select>
           </label>
           <label className="flex flex-col gap-1 text-sm">
             <span className="font-medium">Nº de tombo</span>
-            <input
-              aria-label="Nº de tombo"
-              className={inputCls}
-              value={form.dados.numero_tombo}
-              onChange={(e) => set("numero_tombo", e.target.value)}
-            />
+            <input aria-label="Nº de tombo" className={inputCls} value={form.dados.numero_tombo} onChange={(e) => set("numero_tombo", e.target.value)} />
           </label>
           <label className="flex flex-col gap-1 text-sm">
             <span className="font-medium">Data de aquisição</span>
-            <input
-              type="date"
-              aria-label="Data de aquisição"
-              className={inputCls}
-              value={form.dados.data_aquisicao}
-              onChange={(e) => set("data_aquisicao", e.target.value)}
-            />
+            <input type="date" aria-label="Data de aquisição" className={inputCls} value={form.dados.data_aquisicao} onChange={(e) => set("data_aquisicao", e.target.value)} />
           </label>
           <div className="flex gap-2 sm:col-span-2">
-            <button
-              onClick={salvar}
-              disabled={pending}
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
-            >
+            <button onClick={salvar} disabled={pending} className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
               {form.id == null ? "Adicionar" : "Salvar"}
             </button>
-            <button
-              onClick={() => setForm(null)}
-              className="rounded-lg border border-border px-3 py-2 text-sm text-muted"
-            >
+            <button onClick={() => setForm(null)} className="rounded-lg border border-border px-3 py-2 text-sm text-muted">
               Cancelar
             </button>
           </div>
@@ -208,13 +204,11 @@ export function ExemplaresSecao({
           <tbody>
             {exemplares.length === 0 && (
               <tr>
-                <td colSpan={5} className="py-4 text-center text-muted">
-                  Nenhum exemplar.
-                </td>
+                <td colSpan={5} className="py-4 text-center text-muted">Nenhum exemplar.</td>
               </tr>
             )}
             {exemplares.map((e) => (
-              <tr key={e.id} className="border-b border-border last:border-0">
+              <tr key={e.id} className="border-b border-border last:border-0 align-top">
                 <td className="py-2 pr-4">{e.biblioteca}</td>
                 <td className="py-2 pr-4">
                   <Chip tom={e.statusCodigo === "disponivel" ? "ok" : "neutro"}>{e.statusNome}</Chip>
@@ -222,22 +216,45 @@ export function ExemplaresSecao({
                 <td className="py-2 pr-4 font-mono text-xs text-muted">{e.numero_tombo ?? "—"}</td>
                 <td className="py-2 pr-4 text-muted">{e.data_aquisicao ?? "—"}</td>
                 <td className="py-2">
-                  {(podeEditar || podeExcluir) && (
-                    <div className="flex justify-end gap-2">
+                  {emprestandoId === e.id ? (
+                    <div className="flex flex-wrap justify-end gap-2">
+                      <select aria-label="Leitor" className={inputCls + " max-w-48"} value={leitorSel} onChange={(ev) => setLeitorSel(ev.target.value)}>
+                        <option value="">Selecione o leitor…</option>
+                        {leitores.map((l) => (
+                          <option key={l.id} value={l.id}>{l.nome}</option>
+                        ))}
+                      </select>
+                      <button onClick={() => confirmarEmprestimo(e.id)} disabled={pending} className="rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-60">
+                        Confirmar
+                      </button>
+                      <button onClick={() => setEmprestandoId(null)} className="rounded-lg border border-border px-2.5 py-1 text-xs text-muted">
+                        Cancelar
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap justify-end gap-2">
+                      {podeEmprestar && e.statusCodigo === "disponivel" && (
+                        <button onClick={() => { setEmprestandoId(e.id); setLeitorSel(""); }} className="rounded-lg border border-border px-2.5 py-1 text-xs text-accent-ink hover:bg-accent-tint">
+                          Emprestar
+                        </button>
+                      )}
+                      {podeDevolver && e.statusCodigo === "emprestado" && e.emprestimoAbertoId && (
+                        <button onClick={() => devolverExemplar(e.emprestimoAbertoId!)} disabled={pending} className="rounded-lg border border-border px-2.5 py-1 text-xs text-accent-ink hover:bg-accent-tint disabled:opacity-60">
+                          Devolver
+                        </button>
+                      )}
+                      {podeHistorico && (
+                        <Link href={`/emprestimos?exemplar=${e.id}`} className="rounded-lg border border-border px-2.5 py-1 text-xs text-muted hover:text-ink">
+                          Histórico
+                        </Link>
+                      )}
                       {podeEditar && (
-                        <button
-                          onClick={() => editar(e)}
-                          className="rounded-lg border border-border px-2.5 py-1 text-xs text-muted hover:text-ink"
-                        >
+                        <button onClick={() => editar(e)} className="rounded-lg border border-border px-2.5 py-1 text-xs text-muted hover:text-ink">
                           Editar
                         </button>
                       )}
                       {podeExcluir && (
-                        <button
-                          onClick={() => excluir(e.id)}
-                          disabled={pending}
-                          className="rounded-lg border border-border px-2.5 py-1 text-xs text-danger disabled:opacity-60"
-                        >
+                        <button onClick={() => excluir(e.id)} disabled={pending} className="rounded-lg border border-border px-2.5 py-1 text-xs text-danger disabled:opacity-60">
                           Excluir
                         </button>
                       )}

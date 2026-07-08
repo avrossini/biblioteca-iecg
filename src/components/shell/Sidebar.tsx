@@ -67,9 +67,17 @@ const iconeLeitores = (
   </svg>
 );
 
+const iconeEmprestimos = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 8h13l-3-3" />
+    <path d="M20 16H7l3 3" />
+  </svg>
+);
+
 const PRINCIPAL: Item[] = [
   { label: "Painel", href: "/", code: "home.index", icon: iconePainel },
   { label: "Leitores", href: "/leitores", code: "pessoa.index", icon: iconeLeitores },
+  { label: "Empréstimos", href: "/emprestimos", code: "emprestimo.index", icon: iconeEmprestimos },
 ];
 const CATALOGO: Item[] = [
   { label: "Livros", href: "/livros", code: "livro.index", icon: iconeLivros },

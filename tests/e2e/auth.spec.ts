@@ -18,7 +18,7 @@ test("login com admin cai no dashboard; logout volta ao login", async ({ page })
   await page.getByLabel("Senha").fill(SENHA_ORIGINAL);
   await page.getByRole("button", { name: "Entrar" }).click();
 
-  await expect(page.getByRole("heading", { name: "Bem-vindo" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Painel" })).toBeVisible();
 
   await page.getByRole("button", { name: "Sair" }).click();
   await expect(page).toHaveURL(/\/login/);
@@ -52,7 +52,7 @@ test("recuperação de senha completa via Mailpit", async ({ page, request }) =>
   await page.getByLabel("Nova senha", { exact: true }).fill(NOVA);
   await page.getByLabel("Confirmar nova senha").fill(NOVA);
   await page.getByRole("button", { name: /Salvar/ }).click();
-  await expect(page.getByRole("heading", { name: "Bem-vindo" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Painel" })).toBeVisible();
 
   // Confirma que a nova senha funciona
   await page.getByRole("button", { name: "Sair" }).click();
@@ -60,14 +60,14 @@ test("recuperação de senha completa via Mailpit", async ({ page, request }) =>
   await page.getByLabel("E-mail").fill(ADMIN_EMAIL);
   await page.getByLabel("Senha").fill(NOVA);
   await page.getByRole("button", { name: "Entrar" }).click();
-  await expect(page.getByRole("heading", { name: "Bem-vindo" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Painel" })).toBeVisible();
 
   // Restaura a senha original (usuário logado pode redefinir)
   await page.goto("/redefinir-senha");
   await page.getByLabel("Nova senha", { exact: true }).fill(SENHA_ORIGINAL);
   await page.getByLabel("Confirmar nova senha").fill(SENHA_ORIGINAL);
   await page.getByRole("button", { name: /Salvar/ }).click();
-  await expect(page.getByRole("heading", { name: "Bem-vindo" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Painel" })).toBeVisible();
 });
 
 async function obterLinkRecuperacao(request: APIRequestContext): Promise<string> {

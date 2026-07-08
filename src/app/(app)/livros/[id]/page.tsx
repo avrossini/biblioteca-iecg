@@ -44,17 +44,19 @@ export default async function LivroDetalhePage({
   const resumoHtml = sanitizarResumo(livro.resumo);
   const autores = livro.livro_autor.map((la) => la.autores?.nome).filter(Boolean);
 
-  const [{ data: exRaw }, { data: bibliotecas }, { data: statuses }] = await Promise.all([
-    supabase
-      .from("exemplares")
-      .select(
-        `id, numero_tombo, data_aquisicao, biblioteca_id, status_id, bibliotecas ( nome ), status ( codigo, nome )`,
-      )
-      .eq("livro_id", livro.id)
-      .order("id"),
-    supabase.from("bibliotecas").select("id, nome").order("nome"),
-    supabase.from("status").select("id, nome").order("codigo"),
-  ]);
+  const [{ data: exRaw }, { data: bibliotecas }, { data: statuses }, { data: pessoas }] =
+    await Promise.all([
+      supabase
+        .from("exemplares")
+        .select(
+          `id, numero_tombo, data_aquisicao, biblioteca_id, status_id, bibliotecas ( nome ), status ( codigo, nome )`,
+        )
+        .eq("livro_id", livro.id)
+        .order("id"),
+      supabase.from("bibliotecas").select("id, nome").order("nome"),
+      supabase.from("status").select("id, nome").order("codigo"),
+      supabase.from("pessoas").select("id, nome").order("nome"),
+    ]);
   type ExRow = {
     id: number;
     numero_tombo: string | null;
@@ -64,7 +66,21 @@ export default async function LivroDetalhePage({
     bibliotecas: { nome: string } | null;
     status: { codigo: string; nome: string } | null;
   };
-  const exemplares = ((exRaw ?? []) as unknown as ExRow[]).map((e) => ({
+  const exRows = (exRaw ?? []) as unknown as ExRow[];
+
+  // Empréstimo em aberto por exemplar (para o botão Devolver)
+  const abertos = new Map<number, number>();
+  const ids = exRows.map((e) => e.id);
+  if (ids.length) {
+    const { data: emps } = await supabase
+      .from("emprestimos")
+      .select("id, exemplar_id")
+      .is("data_devolucao", null)
+      .in("exemplar_id", ids);
+    for (const e of emps ?? []) abertos.set(e.exemplar_id, e.id);
+  }
+
+  const exemplares = exRows.map((e) => ({
     id: e.id,
     biblioteca_id: e.biblioteca_id,
     status_id: e.status_id,
@@ -73,6 +89,7 @@ export default async function LivroDetalhePage({
     biblioteca: e.bibliotecas?.nome ?? "—",
     statusCodigo: e.status?.codigo ?? "",
     statusNome: e.status?.nome ?? "—",
+    emprestimoAbertoId: abertos.get(e.id) ?? null,
   }));
 
   return (
@@ -128,9 +145,13 @@ export default async function LivroDetalhePage({
         exemplares={exemplares}
         bibliotecas={bibliotecas ?? []}
         statuses={statuses ?? []}
+        leitores={pessoas ?? []}
         podeCriar={permissoes.includes("exemplar.create")}
         podeEditar={permissoes.includes("exemplar.update")}
         podeExcluir={permissoes.includes("exemplar.destroy")}
+        podeEmprestar={permissoes.includes("emprestimo.emprestar")}
+        podeDevolver={permissoes.includes("emprestimo.devolver")}
+        podeHistorico={permissoes.includes("emprestimo.historico")}
       />
     </div>
   );

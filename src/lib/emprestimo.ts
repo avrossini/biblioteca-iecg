@@ -28,3 +28,20 @@ export function diasEmAtraso(dataPrevista: Date, hoje: Date = new Date()): numbe
   if (ms <= 0) return 0;
   return Math.floor(ms / (1000 * 60 * 60 * 24));
 }
+
+export type SituacaoTom = "ok" | "warn" | "danger" | "neutro";
+
+/** Situação de um empréstimo (rótulo + tom para Chip). Datas em "YYYY-MM-DD". */
+export function situacaoEmprestimo(
+  dataPrevista: string,
+  dataDevolucao: string | null,
+  hoje: Date = new Date(),
+): { label: string; tom: SituacaoTom } {
+  if (dataDevolucao) return { label: "Devolvido", tom: "neutro" };
+  const atraso = diasEmAtraso(new Date(dataPrevista), hoje);
+  if (atraso > 0) return { label: `Atrasado ${atraso}d`, tom: "danger" };
+  if (dataPrevista.slice(0, 10) === hoje.toISOString().slice(0, 10)) {
+    return { label: "Vence hoje", tom: "warn" };
+  }
+  return { label: "No prazo", tom: "ok" };
+}

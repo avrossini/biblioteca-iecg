@@ -159,6 +159,23 @@ Deliverables: CRUD de leitores (`/leitores`) reutilizando `CadastroSimples`; `sr
 (validação de dígitos verificadores); item "Leitores" no menu. Nota: erro em `role="alert"` colide
 com o route-announcer do Next no E2E — mirar o texto (`getByText`), não o role.
 
+### Fase 6 — Circulação — ✅ APROVADA (2026-07-08)
+
+| Verificação | Resultado |
+|-------------|-----------|
+| Lint / Typecheck | ✓ |
+| Unit (Vitest) | ✓ 30/30 (inclui `situacaoEmprestimo`) |
+| pgTAP (banco) | ✓ 49 (leitura de empréstimos gated) |
+| E2E (Playwright) | ✓ 17/17 (loop emprestar→devolver; painel) |
+| Build / Docker | ✓ (`/emprestimos` 307, `/login` 200) |
+| `supabase db reset` | ✓ |
+| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 6") |
+
+Deliverables: ações `emprestar`/`devolver` sobre as RPCs; emprestar/devolver **contextual** no exemplar
++ página **/emprestimos/novo**; lista **/emprestimos** (situação, filtro, histórico por exemplar,
+devolver); **dashboard real** (KPIs + empréstimos em aberto + acervo por gênero + ações rápidas);
+item "Empréstimos" no menu. **Ciclo operacional fechado (Fases 1–6).**
+
 ### Modelo para as próximas fases
 
 ```
