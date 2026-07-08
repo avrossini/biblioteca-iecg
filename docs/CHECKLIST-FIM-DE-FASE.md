@@ -94,6 +94,23 @@ app shell responsivo com navegação condicional; telas **Grupos e permissões**
 dev (Atendente). Nota: server action `signOut` isolada em `auth-actions.ts` (`"use server"`) para
 importação segura em Client Components.
 
+### Fase 4a — Catálogo: cadastros simples — ✅ APROVADA (2026-07-08)
+
+| Verificação | Resultado |
+|-------------|-----------|
+| Lint / Typecheck | ✓ |
+| Unit (Vitest) | ✓ 14/14 (inclui `CadastroSimples`) |
+| pgTAP (banco) | ✓ 41 (inclui RLS + FK restrict do catálogo) |
+| E2E (Playwright) | ✓ 11/11 (cria gênero/autor; Atendente sem catálogo e bloqueado em /generos) |
+| Build / Docker | ✓ (`/generos` 307 protegido, `/login` 200) |
+| `supabase db reset` | ✓ |
+| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 4a") |
+
+Deliverables: componente genérico `CadastroSimples`; CRUD de **gêneros, autores, bibliotecas, status**
+(status com códigos núcleo protegidos); seção **Catálogo** no menu (gated); erros de FK/RLS traduzidos
+(`src/lib/erros-db.ts`). Nota de processo: rodar `supabase db reset` antes do pgTAP local (o E2E de
+admin persiste mudança de permissão no banco vivo); e matar servidor antigo na porta 3000 antes do E2E.
+
 ### Modelo para as próximas fases
 
 ```

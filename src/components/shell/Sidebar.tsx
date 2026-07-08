@@ -30,8 +30,36 @@ const iconeGrupos = (
   </svg>
 );
 
+const iconeAutores = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="8" r="3.4" />
+    <path d="M5.5 20a6.5 6.5 0 0 1 13 0" />
+  </svg>
+);
+const iconeTag = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 8.5 11 4l7 4.5" /><path d="M4 10.5 11 15l3.5-2.2" />
+  </svg>
+);
+const iconePredio = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 20V7l8-3 8 3v13" /><path d="M4 20h16" /><path d="M9 20v-5h6v5" />
+  </svg>
+);
+const iconeStatus = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="8" /><path d="m8.5 12 2.5 2.5 4.5-4.5" />
+  </svg>
+);
+
 const PRINCIPAL: Item[] = [
   { label: "Painel", href: "/", code: "home.index", icon: iconePainel },
+];
+const CATALOGO: Item[] = [
+  { label: "Autores", href: "/autores", code: "autor.index", icon: iconeAutores },
+  { label: "Gêneros", href: "/generos", code: "genero.index", icon: iconeTag },
+  { label: "Bibliotecas", href: "/bibliotecas", code: "biblioteca.index", icon: iconePredio },
+  { label: "Status", href: "/status", code: "status.index", icon: iconeStatus },
 ];
 const ADMIN: Item[] = [
   { label: "Usuários", href: "/admin/usuarios", code: "usuario.index", icon: iconeUsuarios },
@@ -45,6 +73,12 @@ export function Sidebar({
   open: boolean;
   onNavigate: () => void;
 }) {
+  const podeCatalogo = usePode([
+    "autor.index",
+    "genero.index",
+    "biblioteca.index",
+    "status.index",
+  ]);
   const podeAdmin = usePode(["usuario.index", "grupo.index"]);
 
   return (
@@ -58,6 +92,14 @@ export function Sidebar({
       </div>
       <nav className="flex flex-col gap-1">
         {PRINCIPAL.map((i) => (
+          <NavLink key={i.href} item={i} onNavigate={onNavigate} />
+        ))}
+        {podeCatalogo && (
+          <div className="mt-4 px-3 pb-1 text-[0.68rem] font-semibold uppercase tracking-wider text-faint">
+            Catálogo
+          </div>
+        )}
+        {CATALOGO.map((i) => (
           <NavLink key={i.href} item={i} onNavigate={onNavigate} />
         ))}
         {podeAdmin && (
