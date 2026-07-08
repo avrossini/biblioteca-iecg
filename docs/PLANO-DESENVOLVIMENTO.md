@@ -113,7 +113,7 @@ Cada fase é entregável e verificável de forma independente.
 | **4. Catálogo** | CRUD de gêneros, autores, bibliotecas, status, livros (+temas/autores) e exemplares. | 3 |
 | **5. Leitores** | CRUD de pessoas. | 3 |
 | **6. Circulação** | Emprestar, devolver, histórico, dashboard com indicadores. | 4, 5 |
-| **7. PWA** | Manifest, service worker (Serwist), consulta offline, banner de status. | 4–6 |
+| **7. PWA** | Manifest, ícones da marca, service worker mínimo, **instalável + fallback offline** (consulta offline de dados adiada — ver ARQUITETURA §6). | 4–6 |
 | **8. Migração** | Script de ETL + ensaio em staging + relatório de reconciliação. | 1 (+ dump) |
 | **9. Corte** | Migração em produção, validação, virada para a v2. | 7, 8 |
 

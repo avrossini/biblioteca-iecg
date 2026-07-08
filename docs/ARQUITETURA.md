@@ -16,7 +16,7 @@
 | Autorização | **ACL próprio + Row Level Security (RLS)** | Ver seção 4. |
 | Estilo | **Tailwind CSS** (+ shadcn/ui sugerido) | Mobile-first, responsivo. |
 | Dados no cliente | **TanStack Query** (React Query) | Cache + suporte a consulta offline. |
-| PWA | **Serwist** (service worker) + manifest | Instalável + consulta offline. |
+| PWA | **Manifest + service worker mínimo** (Serwist como evolução) | Instalável + fallback offline (Fase 7). Ver seção 6. |
 | Testes | **Vitest + React Testing Library + Playwright + pgTAP** | TDD em todas as camadas. Ver [AMBIENTE-E-TESTES.md](./AMBIENTE-E-TESTES.md). |
 | Ambiente local | **Docker + Docker Compose** (app) + **Supabase CLI** (Docker) | Tudo conteinerizado; nada instalado no host além do Docker. |
 | Hospedagem | **Vercel (Hobby)** | `git push` na `main` → deploy; PRs → preview. |
@@ -212,13 +212,31 @@ Derivado das rotas do sistema atual. Cada `codigo` vira uma linha em `funcionali
 
 ---
 
-## 6. PWA — instalável + consulta offline
+## 6. PWA — instalável (+ fallback offline)
 
-1. **Manifest** (`app/manifest.ts`): nome, ícones (192/512), `display: "standalone"`, cores → app instalável na tela inicial.
-2. **Service worker** (via **Serwist**): faz cache do "app shell" (layout, CSS, JS) para abertura rápida e funcionamento offline da casca.
-3. **Consulta offline dos dados**: TanStack Query com persistência (IndexedDB) — as listagens já visitadas (livros, exemplares, pessoas) ficam disponíveis sem conexão.
-4. **Escrita exige conexão** (decisão atual): emprestar/devolver só online. Um banner indica estado offline e desabilita ações de escrita.
-5. **HTTPS**: garantido pela Vercel.
+**Escopo entregue na Fase 7 (decisão 2026-07-08): "só instalável".** O app é SSR atrás de
+auth+permissão (Server Components + Supabase server client), então não há saída estática para
+pré-cachear; consulta offline real de dados exigiria re-arquitetar a leitura (adiado).
+
+1. **Manifest** (`src/app/manifest.ts`, servido em `/manifest.webmanifest`): nome, `short_name`,
+   ícones 192/512 + **maskable**, `display: "standalone"`, `start_url`/`scope` `/`,
+   `theme_color #43607f` / `background_color #f7f7f4` → app instalável.
+2. **Ícones** (`public/icons/*`): gerados do glifo da marca (`Brand.tsx`) via `scripts/gen-icons.mjs`
+   (`npm run gen:icons`, usa `sharp`); PNGs commitados. Tags `icons`/`appleWebApp`/`viewport.themeColor`
+   no root layout (`src/app/layout.tsx`).
+3. **Service worker** (`public/sw.js`, mínimo, JS puro): registrado por
+   `src/components/ServiceWorkerRegister.tsx`. Precacheia a página `/offline` + ícones; no `fetch`
+   trata **só navegações** (network-first) e, offline, serve o **fallback `/offline`**. Não cacheia
+   dados/páginas de consulta. Esse handler satisfaz o critério de instalabilidade do Chrome.
+4. **Página `/offline`** (`src/app/offline/page.tsx`): estática e **pública** (em `ROTAS_PUBLICAS`);
+   o `proxy.ts` também exclui `manifest.webmanifest` e `sw.js` do matcher para não redirecioná-los ao
+   login.
+5. **Escrita exige conexão**: emprestar/devolver só online.
+6. **HTTPS**: garantido pela Vercel.
+
+**Evolução futura (fora da Fase 7):** cache das páginas visitadas / migração para **Serwist**
+(`@serwist/next`, precache revisionado + runtime caching), indicador visual online/offline no shell, e
+consulta offline de dados (IndexedDB + sync) se algum dia for necessário.
 
 ---
 

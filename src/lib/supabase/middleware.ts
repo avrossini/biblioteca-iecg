@@ -3,7 +3,13 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/lib/database.types";
 
 // Rotas acessíveis sem sessão.
-const ROTAS_PUBLICAS = ["/login", "/esqueci-senha", "/redefinir-senha", "/auth"];
+const ROTAS_PUBLICAS = [
+  "/login",
+  "/esqueci-senha",
+  "/redefinir-senha",
+  "/auth",
+  "/offline",
+];
 
 function ehPublica(pathname: string): boolean {
   return ROTAS_PUBLICAS.some(

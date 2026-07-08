@@ -176,6 +176,28 @@ Deliverables: ações `emprestar`/`devolver` sobre as RPCs; emprestar/devolver *
 devolver); **dashboard real** (KPIs + empréstimos em aberto + acervo por gênero + ações rápidas);
 item "Empréstimos" no menu. **Ciclo operacional fechado (Fases 1–6).**
 
+### Fase 7 — PWA — ✅ APROVADA (2026-07-08)
+
+| Verificação | Resultado |
+|-------------|-----------|
+| Lint / Typecheck | ✓ |
+| Unit (Vitest) | ✓ 34/34 (inclui `manifest`) |
+| pgTAP (banco) | ✓ 49 (sem alteração de banco nesta fase) |
+| E2E (Playwright) | ✓ 20/20 (manifest válido; `/offline`; SW registra e serve fallback offline real) |
+| Build de produção | ✓ (`/manifest.webmanifest` e `/offline` como estáticos) |
+| Docker | ✓ `/login` 200, `/manifest.webmanifest` 200 (`application/manifest+json`), `/sw.js` 200, `/offline` 200 |
+| `supabase db reset` | ✓ (não necessário — sem migração; pgTAP verde) |
+| CI (GitHub Actions) | ⏳ verificar run do commit "Fase 7" |
+
+Deliverables: **PWA instalável** — manifest (`src/app/manifest.ts` → `/manifest.webmanifest`) com
+ícones 192/512 + maskable gerados da marca (`scripts/gen-icons.mjs` + `public/icons/*`); `viewport`/
+`appleWebApp`/`icons` no root layout; service worker mínimo (`public/sw.js`) com fallback offline,
+registrado por `ServiceWorkerRegister`; página pública `/offline`; `proxy.ts` e `ROTAS_PUBLICAS`
+ajustados para liberar manifest/SW/offline. **Escopo "só instalável"** — cache das páginas de consulta
+adiado (ver ARQUITETURA §6). Nota de processo: parar o container Docker na porta 3000 antes do E2E
+(Playwright sobe o build de produção); o E2E do SW faz `reload()` após o registro para garantir
+`navigator.serviceWorker.controller` antes de cortar a rede.
+
 ### Modelo para as próximas fases
 
 ```
