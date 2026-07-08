@@ -32,6 +32,8 @@ make up
 
 - Studio (UI do banco): http://localhost:54323
 - `npx supabase db reset` recria o banco a partir das migrations + seeds.
+- `npm run db:types` regenera `src/lib/database.types.ts` a partir do schema.
+- **Admin de desenvolvimento** (criado pelo seed local, só em dev): `andre.rossini@asmlatin.com` / `biblioteca123`.
 
 ## Testes
 
