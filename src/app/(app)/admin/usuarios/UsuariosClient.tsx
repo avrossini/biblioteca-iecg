@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Can } from "@/components/permissoes/Can";
+import { Chip } from "@/components/ui/Chip";
 import {
   alternarAtivo,
   convidarUsuario,
@@ -83,7 +84,7 @@ export function UsuariosClient({
   return (
     <div className="flex flex-col gap-4">
       <Can code="usuario.create">
-        <div className="rounded-xl border border-border bg-surface p-4">
+        <div className="rounded-card border border-border bg-surface p-4 shadow-card">
           {conviteAberto ? (
             <div className="flex flex-col gap-3">
               <input
@@ -133,7 +134,7 @@ export function UsuariosClient({
         </div>
       </Can>
 
-      <div className="overflow-x-auto rounded-xl border border-border bg-surface">
+      <div className="overflow-x-auto rounded-card border border-border bg-surface shadow-card">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
@@ -169,12 +170,9 @@ export function UsuariosClient({
                     <div className="flex flex-wrap gap-1">
                       {u.grupos.length ? (
                         u.grupos.map((id) => (
-                          <span
-                            key={id}
-                            className="rounded-full bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent"
-                          >
+                          <Chip key={id} tom="accent">
                             {nomeGrupo(id)}
-                          </span>
+                          </Chip>
                         ))
                       ) : (
                         <span className="text-muted">—</span>
@@ -184,9 +182,9 @@ export function UsuariosClient({
                 </td>
                 <td className="px-4 py-3">
                   {u.ativo ? (
-                    <span className="text-green-600">Ativo</span>
+                    <Chip tom="ok">Ativo</Chip>
                   ) : (
-                    <span className="text-muted">Desativado</span>
+                    <Chip tom="neutro">Desativado</Chip>
                   )}
                 </td>
                 <td className="px-4 py-3 text-muted">

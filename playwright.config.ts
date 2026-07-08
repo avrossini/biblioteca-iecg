@@ -4,6 +4,8 @@ export default defineConfig({
   testDir: "./tests/e2e",
   globalSetup: "./tests/e2e/global-setup.ts",
   fullyParallel: true,
+  // 1 worker: evita logins simultâneos no mesmo Supabase local (stalls sob concorrência).
+  workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: "list",

@@ -5,7 +5,7 @@ de acesso por grupos (ACL) e PWA. Reescrita do sistema legado (Laravel) em
 **Next.js + Supabase**.
 
 > Documentação completa em [`docs/`](./docs): processos de negócio, arquitetura,
-> plano de desenvolvimento e o guia de ambiente/testes.
+> plano de desenvolvimento, ambiente/testes e o [padrão visual](./docs/PADRAO-VISUAL.md).
 
 ## Stack
 

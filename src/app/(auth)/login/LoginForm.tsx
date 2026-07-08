@@ -36,7 +36,7 @@ export function LoginForm({ next }: { next?: string }) {
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       {erro && (
-        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="rounded-lg bg-danger-tint px-3 py-2 text-sm text-danger">
           {erro}
         </p>
       )}

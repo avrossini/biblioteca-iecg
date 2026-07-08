@@ -95,15 +95,15 @@ export function GruposClient({
   return (
     <div className="grid gap-4 md:grid-cols-[260px_1fr]">
       {/* Lista de grupos */}
-      <div className="rounded-xl border border-border bg-surface p-2">
+      <div className="rounded-card border border-border bg-surface p-2 shadow-card">
         {grupos.map((g) => (
           <button
             key={g.id}
             onClick={() => setSelId(g.id)}
             className={`block w-full rounded-lg px-3 py-2 text-left text-sm ${
               g.id === selId
-                ? "bg-accent/10 text-accent"
-                : "text-ink hover:bg-paper"
+                ? "bg-accent-tint text-accent-ink"
+                : "text-ink hover:bg-surface-2"
             }`}
           >
             <span className="font-medium">{g.nome}</span>
@@ -157,7 +157,7 @@ export function GruposClient({
       </div>
 
       {/* Matriz de permissões */}
-      <div className="rounded-xl border border-border bg-surface">
+      <div className="rounded-card border border-border bg-surface shadow-card">
         {grupoSel ? (
           <>
             <div className="flex items-center gap-3 border-b border-border p-4">
@@ -174,7 +174,7 @@ export function GruposClient({
                   <button
                     onClick={removerGrupo}
                     disabled={pending}
-                    className="rounded-lg border border-border px-3 py-1.5 text-sm text-red-600 disabled:opacity-60"
+                    className="rounded-lg border border-border px-3 py-1.5 text-sm text-danger disabled:opacity-60"
                   >
                     Excluir grupo
                   </button>

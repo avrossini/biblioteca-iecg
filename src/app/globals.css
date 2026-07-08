@@ -1,34 +1,55 @@
 @import "tailwindcss";
 
+/*
+ * Sistema de design "Sala de leitura" — validado no mockup.
+ * Tema claro único (a versão dark fica como evolução futura).
+ * Ver docs/PADRAO-VISUAL.md.
+ */
 @theme inline {
-  /* Paleta "sala de leitura" — validada no mockup. */
+  /* Neutros — papel morno */
   --color-paper: #f7f7f4;
   --color-surface: #ffffff;
+  --color-surface-2: #f1f1ec;
+  --color-border: #eae9e3;
+  --color-border-strong: #dbdad2;
   --color-ink: #26251f;
   --color-muted: #77746a;
-  --color-border: #eae9e3;
+  --color-faint: #9c998e;
+
+  /* Acento — azul-ardósia */
   --color-accent: #43607f;
+  --color-accent-hover: #375270;
+  --color-accent-tint: #eaf0f6;
   --color-accent-ink: #2e455f;
 
+  /* Semânticos (estado) — separados do acento */
+  --color-ok: #3f8f6b;
+  --color-ok-tint: #e7f2ec;
+  --color-warn: #b07e2b;
+  --color-warn-tint: #f6eedb;
+  --color-danger: #b4544a;
+  --color-danger-tint: #f6e7e4;
+
+  /* Lombadas por gênero (assinatura do catálogo) */
+  --color-romance: #b5837a;
+  --color-historia: #8a8455;
+  --color-ciencia: #5e8296;
+  --color-infantil: #c79a54;
+  --color-poesia: #8c7ba0;
+
+  /* Tipografia */
   --font-serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-}
 
-:root {
-  --background: var(--color-paper);
-  --foreground: var(--color-ink);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #16171a;
-    --foreground: #eceae3;
-  }
+  /* Raio e sombra dos cartões */
+  --radius-card: 14px;
+  --shadow-card: 0 1px 2px rgba(38, 37, 31, 0.04),
+    0 6px 20px rgba(38, 37, 31, 0.06);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-sans);
 }
