@@ -111,6 +111,23 @@ Deliverables: componente genérico `CadastroSimples`; CRUD de **gêneros, autore
 (`src/lib/erros-db.ts`). Nota de processo: rodar `supabase db reset` antes do pgTAP local (o E2E de
 admin persiste mudança de permissão no banco vivo); e matar servidor antigo na porta 3000 antes do E2E.
 
+### Fase 4b — Catálogo: livros — ✅ APROVADA (2026-07-08)
+
+| Verificação | Resultado |
+|-------------|-----------|
+| Lint / Typecheck | ✓ |
+| Unit (Vitest) | ✓ 20/20 (inclui `sanitize`, `cores-genero`) |
+| pgTAP (banco) | ✓ 41 |
+| E2E (Playwright) | ✓ 12/12 (cria livro completo com rich text; Atendente vê lista mas não cria) |
+| Build / Docker | ✓ (`/livros` 307 protegido, `/login` 200) |
+| `supabase db reset` | ✓ |
+| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 4b") |
+
+Deliverables: lista de livros (lombada por gênero determinística), formulário com autores
+(multi-seleção), temas (tags) e **resumo rich text (Tiptap)**, detalhe com resumo **sanitizado**
+(`sanitize-html`), editar/excluir (`.bind` de server action). Nota: o teste E2E da matriz de
+permissões agora **restaura** o estado para não contaminar outros testes.
+
 ### Modelo para as próximas fases
 
 ```

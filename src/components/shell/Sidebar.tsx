@@ -30,6 +30,12 @@ const iconeGrupos = (
   </svg>
 );
 
+const iconeLivros = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H12v15H5.5A1.5 1.5 0 0 0 4 20.5z" />
+    <path d="M12 4h6.5A1.5 1.5 0 0 1 20 5.5v13" />
+  </svg>
+);
 const iconeAutores = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="8" r="3.4" />
@@ -56,6 +62,7 @@ const PRINCIPAL: Item[] = [
   { label: "Painel", href: "/", code: "home.index", icon: iconePainel },
 ];
 const CATALOGO: Item[] = [
+  { label: "Livros", href: "/livros", code: "livro.index", icon: iconeLivros },
   { label: "Autores", href: "/autores", code: "autor.index", icon: iconeAutores },
   { label: "Gêneros", href: "/generos", code: "genero.index", icon: iconeTag },
   { label: "Bibliotecas", href: "/bibliotecas", code: "biblioteca.index", icon: iconePredio },
@@ -74,6 +81,7 @@ export function Sidebar({
   onNavigate: () => void;
 }) {
   const podeCatalogo = usePode([
+    "livro.index",
     "autor.index",
     "genero.index",
     "biblioteca.index",

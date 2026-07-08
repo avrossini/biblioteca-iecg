@@ -31,6 +31,11 @@ test("admin altera a matriz de permissões e persiste", async ({ page }) => {
   await page.reload();
   await page.getByRole("button", { name: /Atendente/ }).click();
   await expect(page.getByLabel("Cadastrar livro")).toBeChecked();
+
+  // Restaura o estado (remove a permissão adicionada) para não contaminar outros testes.
+  await page.getByLabel("Cadastrar livro").uncheck();
+  await page.getByRole("button", { name: "Salvar" }).click();
+  await expect(page.getByRole("button", { name: "Salvar" })).toBeVisible();
 });
 
 test("admin vê a lista de usuários", async ({ page }) => {
