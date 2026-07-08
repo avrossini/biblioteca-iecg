@@ -143,6 +143,22 @@ permissões agora **restaura** o estado para não contaminar outros testes.
 Deliverables: seção **Exemplares** na página do livro (listar/criar/editar/excluir, status em Chip),
 gated por `exemplar.*`; exclusão bloqueada por FK quando há empréstimo. **Fase 4 (Catálogo) concluída.**
 
+### Fase 5 — Leitores — ✅ APROVADA (2026-07-08)
+
+| Verificação | Resultado |
+|-------------|-----------|
+| Lint / Typecheck | ✓ |
+| Unit (Vitest) | ✓ 26/26 (inclui `validarCpf`) |
+| pgTAP (banco) | ✓ 47 (RLS + unicidade + formato de CPF) |
+| E2E (Playwright) | ✓ 15/15 (cria leitor; CPF inválido barrado) |
+| Build / Docker | ✓ (`/leitores` 307, `/login` 200) |
+| `supabase db reset` | ✓ |
+| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 5") |
+
+Deliverables: CRUD de leitores (`/leitores`) reutilizando `CadastroSimples`; `src/lib/cpf.ts`
+(validação de dígitos verificadores); item "Leitores" no menu. Nota: erro em `role="alert"` colide
+com o route-announcer do Next no E2E — mirar o texto (`getByText`), não o role.
+
 ### Modelo para as próximas fases
 
 ```

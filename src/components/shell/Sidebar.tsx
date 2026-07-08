@@ -58,8 +58,18 @@ const iconeStatus = (
   </svg>
 );
 
+const iconeLeitores = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="8" r="3" />
+    <path d="M3.5 19a5.5 5.5 0 0 1 11 0" />
+    <path d="M16 6.5a3 3 0 0 1 0 5.4" />
+    <path d="M17.5 19a5.5 5.5 0 0 0-2.4-4.5" />
+  </svg>
+);
+
 const PRINCIPAL: Item[] = [
   { label: "Painel", href: "/", code: "home.index", icon: iconePainel },
+  { label: "Leitores", href: "/leitores", code: "pessoa.index", icon: iconeLeitores },
 ];
 const CATALOGO: Item[] = [
   { label: "Livros", href: "/livros", code: "livro.index", icon: iconeLivros },
