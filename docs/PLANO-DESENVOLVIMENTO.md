@@ -13,6 +13,7 @@
 4. **Migração ensaiada.** A carga de dados do sistema atual é um script reexecutável, testado em staging antes do corte.
 5. **Ambiente local em Docker.** App, banco e serviços rodam em contêineres; nada instalado no host além do Docker. Ver [AMBIENTE-E-TESTES.md](./AMBIENTE-E-TESTES.md).
 6. **Desenvolvimento test-first (TDD).** Cada regra/funcionalidade nasce de um teste que falha; CI barra merge com suíte vermelha. Ver [AMBIENTE-E-TESTES.md](./AMBIENTE-E-TESTES.md).
+7. **Gate de fim de fase.** Nenhuma fase fecha sem passar pela checagem geral (testes + verificações) e ter o resultado registrado. Ver [CHECKLIST-FIM-DE-FASE.md](./CHECKLIST-FIM-DE-FASE.md).
 
 ---
 
@@ -117,6 +118,8 @@ Cada fase é entregável e verificável de forma independente.
 | **9. Corte** | Migração em produção, validação, virada para a v2. | 7, 8 |
 
 **Toda fase é test-first:** define-se primeiro os testes de aceitação (o que é "pronto"), escreve-se os testes (vermelho), implementa-se (verde) e só então segue. Nenhuma fase fecha com CI vermelho. Ver [AMBIENTE-E-TESTES.md](./AMBIENTE-E-TESTES.md).
+
+**Toda fase termina com o gate** da [CHECKLIST-FIM-DE-FASE.md](./CHECKLIST-FIM-DE-FASE.md): a checagem geral (lint, typecheck, testes, build, Docker, CI) e a conferência dos deliverables da fase, com o resultado registrado naquele arquivo. O planejamento de cada fase deve incluir esse gate como etapa final.
 
 O visual segue o mockup já validado (tema claro, azul-ardósia, serifada clássica, lombada por gênero).
 
