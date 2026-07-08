@@ -8,6 +8,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      # Supabase local no runner (chaves-padrão de desenvolvimento).
+      NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
     steps:
       - uses: actions/checkout@v4
 
@@ -34,6 +38,9 @@ jobs:
 
       - name: Sobe Supabase local (Docker)
         run: supabase start
+
+      - name: Aplica migrations + seeds (garante o admin de dev para o E2E)
+        run: supabase db reset
 
       - name: Testes de banco / RLS (pgTAP)
         run: supabase test db

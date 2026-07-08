@@ -56,6 +56,25 @@ pgTAP); CI; `Makefile`, `README`, `docs/`.
 | Unit / Build | ✓ |
 | CI | ✓ (verificar run do commit "Fase 1") |
 
+### Fase 2 — Autenticação — ✅ APROVADA (2026-07-08)
+
+| Verificação | Resultado |
+|-------------|-----------|
+| Lint / Typecheck | ✓ |
+| Unit (Vitest) | ✓ 9/9 |
+| pgTAP (banco) | ✓ 35 |
+| E2E (Playwright, build de produção) | ✓ 5/5 (redirect de rota protegida, login, logout, senha errada, recuperação via Mailpit) |
+| Build de produção | ✓ |
+| Docker | ✓ `/login` 200 (marca visível), `/` → 307 (protegida) |
+| `supabase db reset` | ✓ |
+| CI (GitHub Actions) | ✓ (verificar run do commit "Fase 2") |
+
+Deliverables: proxy (ex-middleware) de sessão + proteção de rotas; login; logout; recuperação de
+senha (template de e-mail + `/auth/confirm`); dashboard protegido; clients tipados com `Database`.
+Notas técnicas: o E2E roda contra **build de produção** (hidratação confiável — o dev/HMR falha no
+chromium headless deste ambiente) e usa um **global-setup** que reseta a senha do admin, tornando a
+suíte determinística.
+
 ### Modelo para as próximas fases
 
 ```

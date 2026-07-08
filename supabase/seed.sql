@@ -8,12 +8,15 @@ begin
   insert into auth.users (
     instance_id, id, aud, role, email, encrypted_password,
     email_confirmed_at, created_at, updated_at,
-    raw_app_meta_data, raw_user_meta_data
+    raw_app_meta_data, raw_user_meta_data,
+    confirmation_token, recovery_token, email_change_token_new, email_change,
+    email_change_token_current, phone_change, phone_change_token, reauthentication_token
   ) values (
     '00000000-0000-0000-0000-000000000000', v_uid, 'authenticated', 'authenticated',
     'andre.rossini@asmlatin.com', crypt('biblioteca123', gen_salt('bf')),
     now(), now(), now(),
-    '{"provider":"email","providers":["email"]}', '{}'
+    '{"provider":"email","providers":["email"]}', '{}',
+    '', '', '', '', '', '', '', ''
   ) on conflict (id) do nothing;
 
   insert into auth.identities (

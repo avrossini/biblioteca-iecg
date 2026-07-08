@@ -44,6 +44,9 @@ npm run test:db       # pgTAP (RLS/ACL) — requer Supabase no ar
 make test             # unit + db
 ```
 
+Os testes E2E rodam contra um **build de produção** (`next build && next start`, iniciado
+automaticamente pelo Playwright) e usam um _global-setup_ que normaliza a senha do admin.
+
 O desenvolvimento é **test-first**: cada regra/funcionalidade nasce de um teste
 que falha. O CI (GitHub Actions) roda toda a suíte e barra merge com teste vermelho.
 
