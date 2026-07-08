@@ -169,7 +169,7 @@ com o route-announcer do Next no E2E — mirar o texto (`getByText`), não o rol
 | E2E (Playwright) | ✓ 17/17 (loop emprestar→devolver; painel) |
 | Build / Docker | ✓ (`/emprestimos` 307, `/login` 200) |
 | `supabase db reset` | ✓ |
-| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 6") |
+| CI (GitHub Actions) | ✓ success (run do commit "Fase 6") |
 
 Deliverables: ações `emprestar`/`devolver` sobre as RPCs; emprestar/devolver **contextual** no exemplar
 + página **/emprestimos/novo**; lista **/emprestimos** (situação, filtro, histórico por exemplar,
