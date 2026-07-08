@@ -1,6 +1,6 @@
 import { test, expect, type APIRequestContext } from "@playwright/test";
 
-const ADMIN_EMAIL = "andre.rossini@asmlatin.com";
+const ADMIN_EMAIL = "rossini@gmail.com";
 const SENHA_ORIGINAL = "biblioteca123";
 const MAILPIT = "http://127.0.0.1:54324";
 

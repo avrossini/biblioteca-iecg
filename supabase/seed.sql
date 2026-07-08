@@ -1,6 +1,6 @@
 -- Seed de DESENVOLVIMENTO (somente local; roda no `supabase db reset`).
 -- NÃO vai para produção. Cria um usuário Administrador para login local.
--- Credenciais: andre.rossini@asmlatin.com / biblioteca123
+-- Credenciais: rossini@gmail.com / biblioteca123
 do $$
 declare
   v_uid uuid := '00000000-0000-0000-0000-0000000000a1';
@@ -13,7 +13,7 @@ begin
     email_change_token_current, phone_change, phone_change_token, reauthentication_token
   ) values (
     '00000000-0000-0000-0000-000000000000', v_uid, 'authenticated', 'authenticated',
-    'andre.rossini@asmlatin.com', crypt('biblioteca123', gen_salt('bf')),
+    'rossini@gmail.com', crypt('biblioteca123', gen_salt('bf')),
     now(), now(), now(),
     '{"provider":"email","providers":["email"]}', '{}',
     '', '', '', '', '', '', '', ''
@@ -23,7 +23,7 @@ begin
     provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at
   ) values (
     v_uid::text, v_uid,
-    jsonb_build_object('sub', v_uid::text, 'email', 'andre.rossini@asmlatin.com', 'email_verified', true),
+    jsonb_build_object('sub', v_uid::text, 'email', 'rossini@gmail.com', 'email_verified', true),
     'email', now(), now(), now()
   ) on conflict do nothing;
 
