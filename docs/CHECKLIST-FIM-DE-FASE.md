@@ -86,7 +86,7 @@ suíte determinística.
 | Build de produção | ✓ |
 | Docker | ✓ `/login` 200, `/` → 307 |
 | `supabase db reset` | ✓ |
-| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 3") |
+| CI (GitHub Actions) | ✓ success (run do commit "Fase 3") |
 
 Deliverables: plumbing de permissões (`getPermissoes`/`requirePermissao` + `PermissoesProvider`/`<Can>`);
 app shell responsivo com navegação condicional; telas **Grupos e permissões** (matriz) e **Usuários**
