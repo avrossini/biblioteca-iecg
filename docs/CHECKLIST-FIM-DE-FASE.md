@@ -67,7 +67,7 @@ pgTAP); CI; `Makefile`, `README`, `docs/`.
 | Build de produção | ✓ |
 | Docker | ✓ `/login` 200 (marca visível), `/` → 307 (protegida) |
 | `supabase db reset` | ✓ |
-| CI (GitHub Actions) | ✓ (verificar run do commit "Fase 2") |
+| CI (GitHub Actions) | ✓ success (run do commit "Fase 2", 5m11s) |
 
 Deliverables: proxy (ex-middleware) de sessão + proteção de rotas; login; logout; recuperação de
 senha (template de e-mail + `/auth/confirm`); dashboard protegido; clients tipados com `Database`.
