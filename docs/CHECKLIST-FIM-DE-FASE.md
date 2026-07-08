@@ -75,6 +75,25 @@ Notas técnicas: o E2E roda contra **build de produção** (hidratação confiá
 chromium headless deste ambiente) e usa um **global-setup** que reseta a senha do admin, tornando a
 suíte determinística.
 
+### Fase 3 — ACL na interface — ✅ APROVADA (2026-07-08)
+
+| Verificação | Resultado |
+|-------------|-----------|
+| Lint / Typecheck | ✓ |
+| Unit (Vitest) | ✓ 12/12 (inclui `<Can>`) |
+| pgTAP (banco) | ✓ 38 (inclui RLS de administração) |
+| E2E (Playwright, build de produção) | ✓ 9/9 (auth + admin: menu condicional, matriz persiste, lista de usuários, bloqueio de rota) |
+| Build de produção | ✓ |
+| Docker | ✓ `/login` 200, `/` → 307 |
+| `supabase db reset` | ✓ |
+| CI (GitHub Actions) | ⏳ (verificar run do commit "Fase 3") |
+
+Deliverables: plumbing de permissões (`getPermissoes`/`requirePermissao` + `PermissoesProvider`/`<Can>`);
+app shell responsivo com navegação condicional; telas **Grupos e permissões** (matriz) e **Usuários**
+(listar/convidar/editar grupos/ativar-desativar) com service role; template de convite; 2º usuário de
+dev (Atendente). Nota: server action `signOut` isolada em `auth-actions.ts` (`"use server"`) para
+importação segura em Client Components.
+
 ### Modelo para as próximas fases
 
 ```
