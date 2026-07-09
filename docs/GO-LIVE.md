@@ -31,6 +31,11 @@ Tokens podem ser **revogados** após o corte.
 1. Projeto ligado ao repo `avrossini/biblioteca-iecg` (Git integration → `git push` na main deploya).
 2. Env de produção: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
    `NEXT_PUBLIC_PRAZO_DEVOLUCAO_DIAS=14` (públicas) e `SUPABASE_SERVICE_ROLE_KEY` (secreta).
+   - **Atenção (encoding):** cadastrar env var canalizando valor via PowerShell (`$v | vercel env add`)
+     pode injetar um BOM/caractere invisível no valor. A chave `anon` contaminada faz o `signInWithPassword`
+     do navegador falhar com *"String contains non ISO-8859-1 code point"* (login sempre "inválido").
+     Preferir a **API da Vercel** (`POST /v10/projects/{id}/env`) com o valor sanitizado para ASCII
+     (`-replace '[^\x20-\x7E]',''`), ou conferir os bytes depois.
 3. `vercel deploy --prod` → domínio de produção. Voltar ao A5 e gravar o domínio no Auth.
 
 ### C. Carga de dados (ETL → produção)
