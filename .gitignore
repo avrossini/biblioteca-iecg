@@ -48,3 +48,6 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Migração de dados (Fase 8): dump do legado — contém PII, NUNCA commitar.
+/iecg.sql

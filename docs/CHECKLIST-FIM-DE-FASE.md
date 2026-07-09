@@ -187,7 +187,7 @@ item "Empréstimos" no menu. **Ciclo operacional fechado (Fases 1–6).**
 | Build de produção | ✓ (`/manifest.webmanifest` e `/offline` como estáticos) |
 | Docker | ✓ `/login` 200, `/manifest.webmanifest` 200 (`application/manifest+json`), `/sw.js` 200, `/offline` 200 |
 | `supabase db reset` | ✓ (não necessário — sem migração; pgTAP verde) |
-| CI (GitHub Actions) | ⏳ verificar run do commit "Fase 7" |
+| CI (GitHub Actions) | ✓ success (run do commit "Fase 7", 40e5eeb) |
 
 Deliverables: **PWA instalável** — manifest (`src/app/manifest.ts` → `/manifest.webmanifest`) com
 ícones 192/512 + maskable gerados da marca (`scripts/gen-icons.mjs` + `public/icons/*`); `viewport`/
@@ -197,6 +197,29 @@ ajustados para liberar manifest/SW/offline. **Escopo "só instalável"** — cac
 adiado (ver ARQUITETURA §6). Nota de processo: parar o container Docker na porta 3000 antes do E2E
 (Playwright sobe o build de produção); o E2E do SW faz `reload()` após o registro para garantir
 `navigator.serviceWorker.controller` antes de cortar a rede.
+
+### Fase 8 — Migração de dados — ✅ APROVADA (2026-07-08)
+
+| Verificação | Resultado |
+|-------------|-----------|
+| Lint / Typecheck | ✓ |
+| Unit (Vitest) | ✓ 48/48 (inclui 14 de `migracao-transformacoes`) + 2 integração skipadas |
+| Integração (local, Docker MySQL) | ✓ 2/2 (`MIGRACAO_IT=1`, ETL contra fixture sintético) |
+| pgTAP (banco) | ✓ 51 (inclui `10_status_legado`) |
+| E2E (Playwright) | ✓ 20/20 (estado limpo) |
+| Build / Docker | ✓ (`/login` 200) |
+| `supabase db reset` | ✓ (aplica migration `status_legado`) |
+| **Ensaio real (ETL do dump)** | ✓ idempotente; reconciliação coerente (ver abaixo) |
+| CI (GitHub Actions) | ⏳ verificar run do commit "Fase 8" |
+
+Reconciliação do ensaio real: generos 181→179 (2 mesclados), autores 836, bibliotecas 2, pessoas 6
+(5 CPFs + 1 e-mail nulificados), livros 1419, livro_autor 1114→1107, temas 22366→17735, exemplares
+444, emprestimos 20. Sem órfãos de exemplar/empréstimo. Deliverables: migration `status_legado`
+(preserva extraviado/vencido); ETL `scripts/migracao/` (transformações puras + orquestrador via
+`mysql2`/`pg`/service role, IDs preservados, sequences reajustadas); container `mysql-legacy`
+(profile Docker); relatório de reconciliação; `docs/MIGRACAO-DE-DADOS.md`. **Produção fica para a
+Fase 9.** Notas: dump com PII **nunca** commitado (`/iecg.sql` no gitignore); integração fora do CI
+(sem MySQL/PII); trava de segurança contra carga remota acidental.
 
 ### Modelo para as próximas fases
 

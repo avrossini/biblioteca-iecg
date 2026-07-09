@@ -23,3 +23,17 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     command: npm run dev
+
+  # MySQL efêmero para a migração de dados (Fase 8). Só sobe com o profile `legacy`
+  # (`docker compose --profile legacy up -d mysql-legacy`). O dump do legado é montado
+  # e carregado automaticamente na primeira subida. Para recarregar: `... down -v`.
+  mysql-legacy:
+    image: mysql:8
+    profiles: ["legacy"]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: forge
+    ports:
+      - "3307:3306"
+    volumes:
+      - "${LEGACY_DUMP_PATH:-./iecg.sql}:/docker-entrypoint-initdb.d/iecg.sql:ro"

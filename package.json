@@ -17,7 +17,11 @@
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:types": "npx supabase gen types typescript --local > src/lib/database.types.ts",
-    "gen:icons": "node scripts/gen-icons.mjs"
+    "gen:icons": "node scripts/gen-icons.mjs",
+    "migrate:up": "docker compose --profile legacy up -d mysql-legacy",
+    "migrate:down": "docker compose --profile legacy down -v",
+    "migrate": "tsx scripts/migracao/migrar.ts",
+    "test:migracao": "vitest run tests/integration/migracao.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",
@@ -37,6 +41,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^20",
+    "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/sanitize-html": "^2.16.1",
@@ -44,8 +49,11 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "jsdom": "^29.1.1",
+    "mysql2": "^3.22.6",
+    "pg": "^8.22.0",
     "sharp": "^0.34.5",
     "tailwindcss": "^4",
+    "tsx": "^4.23.0",
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.10"
