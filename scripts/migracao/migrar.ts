@@ -350,19 +350,28 @@ function imprimirRelatorio(rel: Relatorio): void {
   console.log("======================================\n");
 }
 
+/** Uma DATABASE_URL é local (dispensa SSL) quando aponta para 127.0.0.1/localhost. */
+export function ehConexaoLocal(url: string): boolean {
+  return /(?:@|\/\/)(127\.0\.0\.1|localhost)[:/]/.test(url);
+}
+
 async function main(): Promise<void> {
   const LEGACY_MYSQL_URL = process.env.LEGACY_MYSQL_URL ?? "mysql://root:root@127.0.0.1:3307/forge";
   const DATABASE_URL = process.env.DATABASE_URL ?? "postgresql://postgres:postgres@127.0.0.1:54322/postgres";
 
   // Trava de segurança: só banco local, salvo confirmação explícita (produção = Fase 9).
-  const local = /(?:@|\/\/)(127\.0\.0\.1|localhost)[:/]/.test(DATABASE_URL);
+  const local = ehConexaoLocal(DATABASE_URL);
   if (!local && process.env.MIGRACAO_PERMITIR_REMOTO !== "1") {
     console.error("DATABASE_URL não é local. Defina MIGRACAO_PERMITIR_REMOTO=1 para carregar em produção (Fase 9).");
     process.exit(2);
   }
 
   const my = await mysql.createConnection({ uri: LEGACY_MYSQL_URL, dateStrings: true, multipleStatements: true });
-  const pg = new Client({ connectionString: DATABASE_URL });
+  // Supabase Cloud exige TLS; local dispensa. rejectUnauthorized:false pois o pg não carrega o CA do Supabase.
+  const pg = new Client({
+    connectionString: DATABASE_URL,
+    ssl: local ? undefined : { rejectUnauthorized: false },
+  });
   await pg.connect();
   try {
     const rel = await executarMigracao(my, pg);

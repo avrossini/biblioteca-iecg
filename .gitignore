@@ -51,3 +51,6 @@ next-env.d.ts
 
 # Migração de dados (Fase 8): dump do legado — contém PII, NUNCA commitar.
 /iecg.sql
+
+.vercel
+.env*

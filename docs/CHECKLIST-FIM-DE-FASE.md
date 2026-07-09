@@ -221,6 +221,27 @@ Reconciliação do ensaio real: generos 181→179 (2 mesclados), autores 836, bi
 Fase 9.** Notas: dump com PII **nunca** commitado (`/iecg.sql` no gitignore); integração fora do CI
 (sem MySQL/PII); trava de segurança contra carga remota acidental.
 
+### Fase 9 — Corte / Go-live — ✅ APROVADA (2026-07-08)
+
+| Verificação | Resultado |
+|-------------|-----------|
+| Lint / Typecheck | ✓ |
+| Unit (Vitest) | ✓ 50/50 (inclui `ehConexaoLocal`) + 2 integração skipadas |
+| pgTAP / E2E / Build | ✓ (inalterados desde a Fase 8) |
+| **Supabase Cloud** | ✓ projeto `rqluyilpcpotgfvdbadi` (Free, sa-east-1); `db push` aplicou as 6 migrations (seed_acl de produção); `seed.sql` dev **não** aplicado |
+| **Vercel** | ✓ deploy de produção em **https://biblioteca-iecg.vercel.app** (env vars públicas + `service_role` secreta) |
+| **Auth** | ✓ `site_url`/`uri_allow_list` = domínio de produção (Management API) |
+| **ETL em produção** | ✓ reconciliação idêntica ao ensaio (livros 1419, temas 22366→17735, pessoas 6, exemplares 444, emprestimos 20) |
+| **Bootstrap admin** | ✓ `rossini@gmail.com` criado e ligado ao grupo Administrador |
+| **Verificação prod** | ✓ `/login` 200; login (password grant) OK; admin com 42 permissões; RLS: livros 1419/pessoas 6/emprestimos 20/exemplares 444; `/manifest.webmanifest` 200 (PWA) |
+| CI (GitHub Actions) | ⏳ verificar run do commit "Fase 9" |
+
+Deliverables: sistema **no ar em produção** com dados reais do legado. Adequações: SSL no ETL
+(`ehConexaoLocal` + `ssl` no `pg.Client`), `scripts/bootstrap-admin.ts` (resolve o ovo-e-galinha do
+1º admin), `docs/GO-LIVE.md` (runbook + recursos). **Follow-up (do responsável):** autorizar o Vercel
+GitHub App p/ `git push`→deploy; configurar SMTP de produção; domínio próprio; considerar Pro (Free
+pausa após ~1 semana). Segredos nunca commitados; tokens revogáveis.
+
 ### Modelo para as próximas fases
 
 ```

@@ -21,7 +21,8 @@
     "migrate:up": "docker compose --profile legacy up -d mysql-legacy",
     "migrate:down": "docker compose --profile legacy down -v",
     "migrate": "tsx scripts/migracao/migrar.ts",
-    "test:migracao": "vitest run tests/integration/migracao.test.ts"
+    "test:migracao": "vitest run tests/integration/migracao.test.ts",
+    "bootstrap:admin": "tsx scripts/bootstrap-admin.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",
