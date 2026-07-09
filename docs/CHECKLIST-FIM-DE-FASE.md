@@ -210,7 +210,7 @@ adiado (ver ARQUITETURA §6). Nota de processo: parar o container Docker na port
 | Build / Docker | ✓ (`/login` 200) |
 | `supabase db reset` | ✓ (aplica migration `status_legado`) |
 | **Ensaio real (ETL do dump)** | ✓ idempotente; reconciliação coerente (ver abaixo) |
-| CI (GitHub Actions) | ⏳ verificar run do commit "Fase 8" |
+| CI (GitHub Actions) | ✓ success (run do commit "Fase 8", 95135dd) |
 
 Reconciliação do ensaio real: generos 181→179 (2 mesclados), autores 836, bibliotecas 2, pessoas 6
 (5 CPFs + 1 e-mail nulificados), livros 1419, livro_autor 1114→1107, temas 22366→17735, exemplares
